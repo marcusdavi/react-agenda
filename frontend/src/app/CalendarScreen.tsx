@@ -1,11 +1,4 @@
-import { Box, Button, Icon, Table, TableBody } from "@material-ui/core";
-import {
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Box, Button } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import {
@@ -13,51 +6,21 @@ import {
   getEventsEndpoint,
   ICalendar,
   IEvent,
+  IEditingEvent,
 } from "./backend";
 import CalendarHeader from "./CalendarHeader";
 import CalendarsView from "./CalendarsView";
 import CalendarTable from "./CalendarTable";
-
-const useStyles = makeStyles({
-  table: {
-    borderTop: "1px solid rgb(224, 224, 224)",
-    minHeight: "100%",
-    tableLayout: "fixed",
-    "& td ~ td, & th ~ th": {
-      borderLeft: "1px solid rgb(224, 224, 224)",
-    },
-    "& td": {
-      verticalAlign: "top",
-      overflow: "hidden",
-      padding: "8px 4px",
-    },
-  },
-  dayOfMonth: { fontWeight: 500, marginBottom: "4px" },
-  event: {
-    display: "flex",
-    alignItems: "center",
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    textAlign: "left",
-    whiteSpace: "nowrap",
-    margin: "4px 0",
-  },
-  eventBackground: {
-    display: "inline-block",
-    color: "white",
-    padding: "2px 4px",
-    borderRadius: "4px",
-  },
-});
+import { getToday } from "./dateFunctions";
+import EventFormDialog from "./EventFormDialog";
 
 export default function CalendarScreen() {
   const { month } = useParams<{ month: string }>();
+  const [editingEvent, setEditingEvent] = useState<IEditingEvent | null>(null);
   const [events, setEvents] = useState<IEvent[]>([]);
   const [calendars, setCalendars] = useState<ICalendar[]>([]);
   const [calendarsSelected, setCalendarsSelected] = useState<boolean[]>([]);
 
-  const classes = useStyles();
   const weeks = generateCalendar(
     month + "-01",
     events,
@@ -78,10 +41,22 @@ export default function CalendarScreen() {
     });
   }, [firstDate, lastDate]);
 
+  function refreshEvents() {
+    getEventsEndpoint(firstDate, lastDate).then(setEvents);
+  }
+
   function toggleCalendar(index: number) {
     const newValue = [...calendarsSelected];
     newValue[index] = !newValue[index];
     setCalendarsSelected(newValue);
+  }
+
+  function openNewEvent(date: string) {
+    setEditingEvent({
+      date: date,
+      desc: "",
+      calendarId: calendars[0].id,
+    });
   }
 
   return (
@@ -92,7 +67,7 @@ export default function CalendarScreen() {
         padding="8px 16px"
       >
         <h2>Agenda React</h2>
-        <Button color="primary" variant="contained">
+        <Button color="primary" variant="contained" onClick={() => openNewEvent(getToday())}>
           Novo Evento
         </Button>
         <Box marginTop="64px">
@@ -105,7 +80,17 @@ export default function CalendarScreen() {
       </Box>
       <Box flex="1" display="flex" flexDirection="column">
         <CalendarHeader month={month} />
-        <CalendarTable weeks={weeks} />
+        <CalendarTable weeks={weeks} onClickDay={openNewEvent} onClickEvent={setEditingEvent}/>
+        <EventFormDialog
+          event={editingEvent}
+          calendars={calendars}
+          onCancel={() => setEditingEvent(null)}
+          onSave={() => {
+            setEditingEvent(null);
+            refreshEvents();
+          }
+        }
+        />
       </Box>
     </Box>
   );
