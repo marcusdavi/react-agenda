@@ -8,8 +8,9 @@ import Select from "@material-ui/core/Select";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import TextField from "@material-ui/core/TextField";
 import { Box, InputLabel } from "@material-ui/core";
-import { createEventEndpoint, deleteEventEndpoint } from "./backend";
-import { ICalendar, IEditingEvent, updateEventEndpoint } from "./backend";
+import { createEventEndpoint, deleteEventEndpoint } from "../services/backend";
+import { updateEventEndpoint } from "../services/backend";
+import {ICalendar, IEditingEvent} from "../interfaces/interfaces"
 import { useEffect, useRef, useState } from "react";
 
 interface IEventFormDialogProps {

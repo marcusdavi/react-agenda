@@ -2,7 +2,7 @@ import { Box, Icon, Table, TableBody, TableCell } from "@material-ui/core";
 import { TableContainer, TableHead, TableRow } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
-import { ICalendar, IEvent } from "./backend";
+import { ICalendar, IEvent } from "../interfaces/interfaces";
 
 const DAYS_OF_WEEK = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
 

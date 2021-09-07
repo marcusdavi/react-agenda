@@ -1,20 +1,16 @@
 import { Box, Button } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import {
-  getCalendarsEndpoint,
-  getEventsEndpoint,
-  ICalendar,
-  IEvent,
-  IEditingEvent,
-} from "./backend";
-import CalendarHeader from "./CalendarHeader";
-import CalendarsView from "./CalendarsView";
-import CalendarTable from "./CalendarTable";
-import { getToday } from "./dateFunctions";
-import EventFormDialog from "./EventFormDialog";
+import { getCalendarsEndpoint, getEventsEndpoint } from "../services/backend";
+import {  ICalendar,  IEvent,  IEditingEvent, ICalendarScreenProps} from "../interfaces/interfaces"
+import CalendarHeader from "../components/CalendarHeader";
+import CalendarsView from "../components/CalendarsView";
+import CalendarTable from "../components/CalendarTable";
+import { getToday } from "../helpers/dateFunctions";
+import EventFormDialog from "../components/EventFormDialog";
 
-export default function CalendarScreen() {
+export default function CalendarScreen(props: ICalendarScreenProps) {
+  const { user, onSignOut } = props;
   const { month } = useParams<{ month: string }>();
   const [editingEvent, setEditingEvent] = useState<IEditingEvent | null>(null);
   const [events, setEvents] = useState<IEvent[]>([]);
@@ -67,7 +63,11 @@ export default function CalendarScreen() {
         padding="8px 16px"
       >
         <h2>Agenda React</h2>
-        <Button color="primary" variant="contained" onClick={() => openNewEvent(getToday())}>
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={() => openNewEvent(getToday())}
+        >
           Novo Evento
         </Button>
         <Box marginTop="64px">
@@ -79,8 +79,12 @@ export default function CalendarScreen() {
         </Box>
       </Box>
       <Box flex="1" display="flex" flexDirection="column">
-        <CalendarHeader month={month} />
-        <CalendarTable weeks={weeks} onClickDay={openNewEvent} onClickEvent={setEditingEvent}/>
+        <CalendarHeader month={month} user={user} onSignOut={onSignOut}/>
+        <CalendarTable
+          weeks={weeks}
+          onClickDay={openNewEvent}
+          onClickEvent={setEditingEvent}
+        />
         <EventFormDialog
           event={editingEvent}
           calendars={calendars}
@@ -88,8 +92,7 @@ export default function CalendarScreen() {
           onSave={() => {
             setEditingEvent(null);
             refreshEvents();
-          }
-        }
+          }}
         />
       </Box>
     </Box>

@@ -1,5 +1,5 @@
 import { Box, Checkbox, FormControlLabel } from "@material-ui/core";
-import { ICalendar } from "./backend";
+import { ICalendar } from "../interfaces/interfaces";
 
 interface ICalendarViewProps {
   calendars: ICalendar[];
