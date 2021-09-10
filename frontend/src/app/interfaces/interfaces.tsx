@@ -25,13 +25,11 @@ export interface IEvent extends IEditingEvent {
   id: number;
 }
 
-export interface ICalendarScreenProps extends IUserMenuProps{}
-  
-export interface IUserMenuProps {
-  user: IUser;
-  onSignOut: () => void;
+export interface ICalendarHeaderProps {
+  month: string;
 }
 
-export interface ICalendarHeaderProps extends IUserMenuProps {
-  month: string;
+export interface IAuthContext {
+  user: IUser;
+  onSignOut: () => void;
 }

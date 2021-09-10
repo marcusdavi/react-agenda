@@ -2,6 +2,7 @@ import { Box, Icon, Table, TableBody, TableCell } from "@material-ui/core";
 import { TableContainer, TableHead, TableRow } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
+import { getToday } from "../helpers/dateFunctions";
 import { ICalendar, IEvent } from "../interfaces/interfaces";
 
 const DAYS_OF_WEEK = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
@@ -20,7 +21,18 @@ const useStyles = makeStyles({
       padding: "8px 4px",
     },
   },
-  dayOfMonth: { fontWeight: 500, marginBottom: "4px" },
+  dayOfMonth: {
+    display: "inline-block",
+    width: "24px",
+    lineHeight: "24px",
+    fontWeight: 500,
+    marginBottom: "4px",
+    borderRadius: "50%",
+    "&.today": { 
+      backgroundColor: "#3f51b5",
+      color: "white" 
+    },
+  },
   event: {
     display: "flex",
     alignItems: "center",
@@ -41,8 +53,8 @@ const useStyles = makeStyles({
 
 interface ICalendarProps {
   weeks: ICalendarCell[][];
-  onClickDay: (date:string) => void;
-  onClickEvent: (event:IEvent) => void;
+  onClickDay: (date: string) => void;
+  onClickEvent: (event: IEvent) => void;
 }
 
 export default function CalendarTable(props: ICalendarProps) {
@@ -79,7 +91,14 @@ export default function CalendarTable(props: ICalendarProps) {
                     key={cell.date}
                     onClick={(mEvent) => handleClick(mEvent, cell.date)}
                   >
-                    <div className={classes.dayOfMonth}>{cell.dayOfMonth}</div>
+                    <div
+                      className={
+                        classes.dayOfMonth +
+                        (cell.date === getToday() ? " today" : "")
+                      }
+                    >
+                      {cell.dayOfMonth}
+                    </div>
                     {cell.events.map((event) => {
                       const color = event.calendar.color;
                       return (

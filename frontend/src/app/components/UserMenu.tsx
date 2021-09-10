@@ -1,9 +1,9 @@
 import { IconButton, Avatar, Icon, Box } from "@material-ui/core";
 import { Menu, MenuItem } from "@material-ui/core";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { IUserMenuProps } from "../interfaces/interfaces";
 import { signOutEndpoint } from "../services/backend";
+import { authContext } from "../contexts/authContext";
 
 const useStyles = makeStyles({
   userDetails: {
@@ -19,9 +19,9 @@ const useStyles = makeStyles({
   },
 });
 
-export default function UserMenu(props: IUserMenuProps) {
+export default function UserMenu() {
+  const {user,onSignOut}  = useContext(authContext);
   const classes = useStyles();
-  const { user, onSignOut } = props;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
