@@ -1,10 +1,11 @@
 import { Box, Icon, IconButton } from "@material-ui/core";
+import React from "react";
 import { Link } from "react-router-dom";
 import { addMonths, formatMonth } from "../helpers/dateFunctions";
 import { ICalendarHeaderProps } from "../interfaces/interfaces";
 import UserMenu from "./UserMenu";
 
-export default function CalendarHeader(props: ICalendarHeaderProps) {
+export const CalendarHeader = React.memo(function(props: ICalendarHeaderProps) {
   const { month } = props;
 
   return (
@@ -31,4 +32,4 @@ export default function CalendarHeader(props: ICalendarHeaderProps) {
       <UserMenu />
     </Box>
   );
-}
+})

@@ -57,7 +57,7 @@ interface ICalendarProps {
   onClickEvent: (event: IEvent) => void;
 }
 
-export default function CalendarTable(props: ICalendarProps) {
+export const CalendarTable = React.memo(function(props: ICalendarProps) {
   const { weeks } = props;
   const classes = useStyles();
 
@@ -139,7 +139,7 @@ export default function CalendarTable(props: ICalendarProps) {
       </Table>
     </TableContainer>
   );
-}
+});
 
 export type IEventWithCalendar = IEvent & { calendar: ICalendar };
 

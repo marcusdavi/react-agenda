@@ -1,11 +1,11 @@
 import { Box, Button } from "@material-ui/core";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { getCalendarsEndpoint, getEventsEndpoint } from "../services/backend";
-import {  ICalendar,  IEvent,  IEditingEvent} from "../interfaces/interfaces"
-import CalendarHeader from "../components/CalendarHeader";
-import CalendarsView from "../components/CalendarsView";
-import CalendarTable from "../components/CalendarTable";
+import { ICalendar, IEvent, IEditingEvent } from "../interfaces/interfaces";
+import { CalendarHeader } from "../components/CalendarHeader";
+import { CalendarsView } from "../components/CalendarsView";
+import { CalendarTable } from "../components/CalendarTable";
 import { getToday } from "../helpers/dateFunctions";
 import EventFormDialog from "../components/EventFormDialog";
 
@@ -16,12 +16,16 @@ export default function CalendarScreen() {
   const [calendars, setCalendars] = useState<ICalendar[]>([]);
   const [calendarsSelected, setCalendarsSelected] = useState<boolean[]>([]);
 
-  const weeks = generateCalendar(
-    month + "-01",
-    events,
-    calendars,
-    calendarsSelected
-  );
+  //Geração do calendário é feita apenas se os 4 itens do vetor mudam.
+  const weeks = useMemo(() => {
+    return generateCalendar(
+      month + "-01",
+      events,
+      calendars,
+      calendarsSelected
+    );
+  }, [month, events, calendars, calendarsSelected]);
+
   const firstDate = weeks[0][0].date;
   const lastDate = weeks[weeks.length - 1][6].date;
 
@@ -39,20 +43,25 @@ export default function CalendarScreen() {
   function refreshEvents() {
     getEventsEndpoint(firstDate, lastDate).then(setEvents);
   }
+  const toggleCalendar = useCallback(
+    (index: number) => {
+      const newValue = [...calendarsSelected];
+      newValue[index] = !newValue[index];
+      setCalendarsSelected(newValue);
+    },
+    [calendarsSelected]
+  );
 
-  function toggleCalendar(index: number) {
-    const newValue = [...calendarsSelected];
-    newValue[index] = !newValue[index];
-    setCalendarsSelected(newValue);
-  }
-
-  function openNewEvent(date: string) {
-    setEditingEvent({
-      date: date,
-      desc: "",
-      calendarId: calendars[0].id,
-    });
-  }
+  const openNewEvent = useCallback(
+    (date: string) => {
+      setEditingEvent({
+        date: date,
+        desc: "",
+        calendarId: calendars[0].id,
+      });
+    },
+    [calendars]
+  );
 
   return (
     <Box display="flex" height="100%" alignItems="stretch">
@@ -78,7 +87,7 @@ export default function CalendarScreen() {
         </Box>
       </Box>
       <Box flex="1" display="flex" flexDirection="column">
-        <CalendarHeader month={month}/>
+        <CalendarHeader month={month} />
         <CalendarTable
           weeks={weeks}
           onClickDay={openNewEvent}
