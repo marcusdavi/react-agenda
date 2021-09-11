@@ -93,6 +93,17 @@
       "calendarId": 2,
       "time": "10:00",
       "id": 14
+    },
+    {
+      "date": "2021-09-10",
+      "desc": "teste",
+      "calendarId": 1,
+      "id": 15,
+      "calendar": {
+        "id": 1,
+        "name": "Pessoal",
+        "color": "#8E24AA"
+      }
     }
   ]
 }
