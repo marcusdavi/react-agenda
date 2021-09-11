@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { IAuthContext } from "../interfaces/interfaces";
 
 export const authContext = React.createContext<IAuthContext>({
@@ -8,3 +8,7 @@ export const authContext = React.createContext<IAuthContext>({
   },
   onSignOut: () => {}
 });
+
+export function useAuthContext() {
+  return useContext(authContext);
+}
